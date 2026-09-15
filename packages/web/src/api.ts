@@ -6,9 +6,11 @@ import type {
 } from './types';
 
 async function request<T>(url: string, init?: RequestInit): Promise<T> {
+  const headers: Record<string, string> = {};
+  if (init?.body != null) headers['Content-Type'] = 'application/json';
   const res = await fetch(url, {
-    headers: { 'Content-Type': 'application/json' },
     ...init,
+    headers: { ...headers, ...init?.headers },
   });
   const text = await res.text();
   const data = text ? JSON.parse(text) : {};

@@ -58,15 +58,29 @@ export async function chat(
   }
 }
 
-const SYSTEM_PROMPT = `你是一名严谨的网页内容排版编辑。用户会给你一份从网页提取的 Markdown 文本（可能包含 OCR 识别结果）。
+const SYSTEM_PROMPT = `你是一名严谨的网页内容编辑。用户会给你一份从网页提取的 Markdown 文本（可能包含 OCR 识别结果）。
 请严格按以下要求输出整理后的 Markdown：
 
-1. 删除导航栏、菜单、广告、弹窗、相关推荐、版权声明、备案号、登录注册按钮等与正文无关的内容；
-2. 合并因 OCR 或分段错误产生的碎片段落与重复段落，保证语义连贯；段落长度适中，不要出现超长或只有一两个字的段落；
-3. 修正标题层级：全文只能有一个一级标题（#）；正文各部分使用 ## / ### 递进，不允许跳级；
-4. 完整保留所有图片语法（形如 ![图片说明](图片地址)）、超链接、有序/无序列表、引用、表格（GFM 语法）和代码块（含语言标记与其中全部代码），不得改写 URL、不得删减正文事实信息；
-5. OCR 文本中的页眉页脚、重复水印、二维码提示文字应删除；
-6. 只输出 Markdown 正文本身，不要输出任何解释说明，不要用代码块包裹整体输出。`;
+A. 标题（最重要）：
+- 如果正文能看出明确的文章标题（如 OCR 结果中的首个 H1、或第一屏的大字号标题、或 og:meta 能看出的主题），在 Markdown 首行输出 \`# 这个标题\`；
+- 如果看不出明确标题，则以文章最核心的中心思想自己提炼一个 8–30 字的标题，首行同样输出 \`# 提炼标题\`；
+- 禁止使用"未命名网页"、URL、或与正文内容无关的占位词作为标题。
+
+B. 删除噪声内容（逐条检查，只要命中即删）：
+- 导航栏、菜单、标签页、面包屑、侧边栏"相关推荐""猜你喜欢""热门文章"；
+- 广告、弹窗、免责声明、版权声明、备案号 ICP 号、公安备案；
+- 作者署名 + 公众号名 + 发布时间 + 来源行（如"原创 XXX 公众号 2026年X月X日 XX:XX XX"这种组合）；
+- 联系方式、微信号、QQ、邮箱、"vx: xxx""扫码加群""扫码关注公众号"；
+- OCR 识别产生的水印行、页眉页脚重复字、"公众号·XXX"字样；
+- 社交按钮相关文字（赞、在看、分享、留言、评论、星标），仅删按钮/提示行，不要删正文里的这些词；
+- 页脚版权、推荐关注、版权声明、版权所有©。
+
+C. 正文排版：
+- 合并因 OCR 或分段错误产生的碎片段落与重复段落，保证语义连贯；段落长度适中；
+- 全文只能有一个一级标题（首行的 \`# 标题\`），正文各部分使用 ## / ### 递进，不允许跳级；
+- 完整保留所有图片语法 \`![说明](URL)\`、超链接、有序/无序列表、引用、表格（GFM）和代码块（含语言标记与全部代码）；
+- 不得改写图片/链接 URL，不得删减正文事实信息；
+- 只输出 Markdown 正文本身，不要任何解释，不要用代码块包裹整体。`;
 
 function stripCodeFence(text: string): string {
   const m = /^```(?:markdown)?\s*\n([\s\S]*?)\n```\s*$/.exec(text.trim());
@@ -103,13 +117,19 @@ export async function refineMarkdown(
   const beforeFences = countCodeFences(markdown);
   const beforeTables = countTables(markdown);
 
+  // 如果传入的 title 是未命名网页/URL 占位，告诉模型"不可靠，请自行推断"
+  const reliableTitle = title && !/^(未命名网页|https?:\/\/|http:\/\/)/i.test(title);
+  const userTitleHint = reliableTitle
+    ? `页面标题（供参考，模型推断优先）：${title}`
+    : `页面标题未识别成功，请从正文内容中推断一个合适的标题作为 # 首行输出`;
+
   const output = stripCodeFence(
     await chat(
       [
         { role: 'system', content: SYSTEM_PROMPT },
         {
           role: 'user',
-          content: `页面标题：${title}\n页面地址：${url}\n\n以下是待整理的 Markdown：\n\n${markdown}`,
+          content: `${userTitleHint}\n页面地址：${url}\n\n以下是待整理的 Markdown：\n\n${markdown}`,
         },
       ],
       settings,

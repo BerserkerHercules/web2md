@@ -1,9 +1,25 @@
-import { createReadStream, existsSync } from 'node:fs';
+import { createReadStream, existsSync, readFileSync } from 'node:fs';
 import { rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { FastifyInstance } from 'fastify';
 import { store } from '../store';
 import type { Job } from '../types';
+
+/** 从磁盘读取 job 的 markdown 全文并返回完整对象（供详情接口预览） */
+function hydrateMarkdown(job: Job): Job {
+  if (job.markdown) return job;
+  if (job.markdownName) {
+    const filePath = join(store.artifactDir(job.id), job.markdownName);
+    if (existsSync(filePath)) {
+      try {
+        return { ...job, markdown: readFileSync(filePath, 'utf-8') };
+      } catch {
+        /* 读取失败就返回原样，markdown 字段为空 */
+      }
+    }
+  }
+  return { ...job, markdown: job.markdown ?? '' };
+}
 
 /** 列表接口不回传 Markdown 全文；详情接口带 markdown 供预览 */
 function toSummary(job: Job, withMarkdown = false): Job | Omit<Job, 'markdown'> {
@@ -24,7 +40,7 @@ export default async function jobRoutes(app: FastifyInstance): Promise<void> {
   app.get<{ Params: { id: string } }>('/api/jobs/:id', async (req, reply) => {
     const job = store.get(req.params.id);
     if (!job) return reply.code(404).send({ error: '任务不存在' });
-    return toSummary(job, true);
+    return toSummary(hydrateMarkdown(job), true);
   });
 
   app.get<{ Params: { id: string } }>('/api/jobs/:id/events', (req, reply) => {

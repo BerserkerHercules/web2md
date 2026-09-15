@@ -258,8 +258,8 @@ export async function recognizeTiles(
   let done = 0;
   let firstError = '';
   const lastPhase = new Map<number, string>();
-  // 异步任务适度并发（过高并发容易触发服务端队列限制）
-  const parts = await mapLimit(tiles, 2, async (tile) => {
+  // 串行提交每屏 OCR（PaddleOCR-VL 云端队列紧张时串行能显著降低 10010 拒服率）
+  const parts = await mapLimit(tiles, 1, async (tile) => {
     try {
       const text =
         settings.provider === 'custom'

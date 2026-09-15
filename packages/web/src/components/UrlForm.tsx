@@ -10,8 +10,8 @@ interface Props {
 
 export default function UrlForm({ running, llmConfigured, onConvert }: Props) {
   const [url, setUrl] = useState('');
-  const [useLlm, setUseLlm] = useState(false);
-  const [ocrMode, setOcrMode] = useState<ConvertOptions['ocrMode']>('auto');
+  const [useLlm, setUseLlm] = useState(true);
+  const [ocrMode, setOcrMode] = useState<ConvertOptions['ocrMode']>('off');
   const [includeSource, setIncludeSource] = useState(true);
 
   const submit = (e: React.FormEvent) => {

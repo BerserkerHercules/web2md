@@ -4,6 +4,8 @@ import { marked } from 'marked';
 import {
   AlertTriangle,
   CheckCircle2,
+  Copy,
+  Check,
   Download,
   Eye,
   FileCode2,
@@ -23,12 +25,38 @@ function formatSize(bytes: number): string {
   return `${(bytes / 1024 / 1024).toFixed(2)} MB`;
 }
 
+/** 跨浏览器剪贴板写入（优先 Clipboard API，降级 textarea execCommand） */
+async function copyToClipboard(text: string): Promise<boolean> {
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch {
+    /* 降级 */
+  }
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    return ok;
+  } catch {
+    return false;
+  }
+}
+
 interface Props {
   job: Job;
 }
 
 export default function ResultCard({ job }: Props) {
   const [tab, setTab] = useState<'preview' | 'raw'>('preview');
+  const [copied, setCopied] = useState(false);
 
   const html = useMemo(() => {
     if (!job.markdown) return '';
@@ -37,6 +65,15 @@ export default function ResultCard({ job }: Props) {
   }, [job.markdown]);
 
   const stats = job.stats;
+
+  const handleCopy = async () => {
+    if (!job.markdown) return;
+    const ok = await copyToClipboard(job.markdown);
+    if (ok) {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    }
+  };
 
   return (
     <div className="rounded-2xl border border-emerald-200 bg-white shadow-sm">
@@ -116,28 +153,52 @@ export default function ResultCard({ job }: Props) {
         </div>
       ) : null}
 
-      <div className="flex items-center gap-1 px-5 pt-3">
+      <div className="flex items-center justify-between gap-3 px-5 pt-3">
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => setTab('preview')}
+            className={`inline-flex items-center gap-1.5 rounded-t-lg border-b-2 px-3 py-2 text-xs font-medium transition ${
+              tab === 'preview'
+                ? 'border-indigo-600 text-indigo-700'
+                : 'border-transparent text-slate-500 hover:text-slate-700'
+            }`}
+          >
+            <Eye className="h-3.5 w-3.5" />
+            渲染预览
+          </button>
+          <button
+            onClick={() => setTab('raw')}
+            className={`inline-flex items-center gap-1.5 rounded-t-lg border-b-2 px-3 py-2 text-xs font-medium transition ${
+              tab === 'raw'
+                ? 'border-indigo-600 text-indigo-700'
+                : 'border-transparent text-slate-500 hover:text-slate-700'
+            }`}
+          >
+            <FileCode2 className="h-3.5 w-3.5" />
+            Markdown 源码
+          </button>
+        </div>
         <button
-          onClick={() => setTab('preview')}
-          className={`inline-flex items-center gap-1.5 rounded-t-lg border-b-2 px-3 py-2 text-xs font-medium transition ${
-            tab === 'preview'
-              ? 'border-indigo-600 text-indigo-700'
-              : 'border-transparent text-slate-500 hover:text-slate-700'
-          }`}
+          onClick={handleCopy}
+          disabled={!job.markdown}
+          className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition ${
+            copied
+              ? 'border-emerald-300 bg-emerald-50 text-emerald-700'
+              : 'border-slate-300 text-slate-600 hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-700'
+          } disabled:cursor-not-allowed disabled:opacity-50`}
+          title="复制 Markdown 源码到剪贴板"
         >
-          <Eye className="h-3.5 w-3.5" />
-          渲染预览
-        </button>
-        <button
-          onClick={() => setTab('raw')}
-          className={`inline-flex items-center gap-1.5 rounded-t-lg border-b-2 px-3 py-2 text-xs font-medium transition ${
-            tab === 'raw'
-              ? 'border-indigo-600 text-indigo-700'
-              : 'border-transparent text-slate-500 hover:text-slate-700'
-          }`}
-        >
-          <FileCode2 className="h-3.5 w-3.5" />
-          Markdown 源码
+          {copied ? (
+            <>
+              <Check className="h-3.5 w-3.5" />
+              已复制
+            </>
+          ) : (
+            <>
+              <Copy className="h-3.5 w-3.5" />
+              复制 Markdown
+            </>
+          )}
         </button>
       </div>
 

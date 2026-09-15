@@ -36,6 +36,11 @@ async function main(): Promise<void> {
       if (req.url.startsWith('/api/')) {
         return reply.code(404).send({ error: '接口不存在' });
       }
+      // 静态资源请求（/assets/*、.js/.css/.png 等）找不到直接返回 404，
+      // 不能 fallback 到 index.html —— 否则浏览器会把 HTML 当 JS 执行崩掉
+      if (/^\/assets\//.test(req.url) || /\.[a-z0-9]+$/i.test(req.url)) {
+        return reply.code(404).send({ error: '静态资源不存在' });
+      }
       return reply.sendFile('index.html');
     });
     app.log.info(`前端产物目录：${WEB_DIST}`);

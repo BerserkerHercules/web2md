@@ -220,13 +220,32 @@ export async function runConversion(jobId: string): Promise<void> {
       if (!settings.llm.enabled) {
         stage('llm', 'skipped', '未在设置中启用大模型');
       } else {
-        stage('llm', 'running', '大模型正在理解内容、去噪与优化排版…');
+        stage('llm', 'running', '大模型正在理解内容、去噪与推断标题…');
         try {
-          bodyMarkdown = tidyBlankLines(
+          const llmOutput = tidyBlankLines(
             await refineMarkdown(bodyMarkdown, title, finalUrl, settings.llm),
           );
+          // 从 LLM 输出首行解析 # 标题，回填 job.title；
+          // 用 LLM 推断的标题优先于 DOM/渲染层兜底拿到的 URL / 未命名网页
+          const firstH1Match = /^#\s+(.+?)\s*$/m.exec(llmOutput);
+          const inferred = firstH1Match?.[1]?.trim() ?? '';
+          const isNoise =
+            !inferred ||
+            inferred.length < 2 ||
+            inferred.length > 120 ||
+            /^(未命名网页|https?:\/\/)/i.test(inferred);
+          if (!isNoise) {
+            if (inferred !== title) {
+              title = inferred;
+              store.update(jobId, { title });
+              log(`标题由大模型识别：${title}`);
+            }
+          } else if (!title || /^(未命名网页|https?:\/\/)/i.test(title)) {
+            log('大模型未能识别出可靠标题，保留原标题占位');
+          }
+          bodyMarkdown = llmOutput;
           llmUsed = true;
-          stage('llm', 'done', '大模型精炼完成');
+          stage('llm', 'done', '大模型精炼完成（去噪 + 标题推断）');
         } catch (err) {
           log((err as Error).message);
           stage('llm', 'skipped', (err as Error).message);

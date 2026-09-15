@@ -155,24 +155,57 @@ function heuristicExtract(
   };
 }
 
+/** 从原始 HTML 中独立提取标题，绕开 Readability 可能丢失 og:meta 的问题 */
+function extractTitleFromHtml(rawHtml: string, url: string): string {
+  const $ = cheerio.load(rawHtml);
+
+  // 1) og:title / twitter:title（微信、小红书等社交页最可靠）
+  const og =
+    $('meta[property="og:title"]').attr('content') ||
+    $('meta[name="twitter:title"]').attr('content');
+  if (og) {
+    const t = og.trim();
+    if (t && !/^https?:\/\//i.test(t)) return t;
+  }
+
+  // 2) 微信公众号特有的 h1#activity-name
+  const activity = $('h1#activity-name').text().trim();
+  if (activity) return activity;
+
+  // 3) 页面第一个 h1
+  const h1 = $('h1').first().text().trim();
+  if (h1 && h1.length >= 2 && h1.length <= 120) return h1;
+
+  // 4) <title> 但过滤掉形如 "https://..." 的整 URL 占位
+  const t = $('title').first().text().trim();
+  if (t && !/^https?:\/\//i.test(t) && t.length >= 2 && t.length <= 120) {
+    // 微信 title 会在末尾拼上公众号名："正文标题 | 公众号名"，只取第一段
+    return t.split(/\s*[|｜\-–]\s*/)[0].trim();
+  }
+
+  return '';
+}
+
 export function extractFromHtml(rawHtml: string, url: string): ExtractResult {
   const cleaned = preprocess(rawHtml);
 
-  let title = '';
+  let title = extractTitleFromHtml(rawHtml, url);
   let contentHtml = '';
   let byline: string | undefined;
   let excerpt = '';
 
   const article = readabilityExtract(cleaned, url);
   if (article?.content) {
-    title = article.title || '';
+    // 仅当上面的多级兜底没拿到标题时，才用 Readability 的 title；
+    // Readability 在微信页上经常返回空或 URL 本身，所以 og 链路优先
+    if (!title && article.title) title = article.title.trim();
     contentHtml = article.content;
     byline = article.byline ?? undefined;
     excerpt = article.excerpt ?? '';
   } else {
     const fallback = heuristicExtract(cleaned);
     if (fallback) {
-      title = fallback.title;
+      if (!title) title = fallback.title;
       contentHtml = fallback.content;
     }
   }
@@ -199,7 +232,11 @@ export function extractFromHtml(rawHtml: string, url: string): ExtractResult {
     html: contentHtml,
     textLength: length,
     paragraphCount: paragraphs,
-    lowQuality: length < 400 || paragraphs < 3,
+    // 质量不足判定：两个条件**同时**满足才算低质（只有真的空壳/动态渲染页面才会两个都挂）
+    // - 总字数 < 300
+    // - 有效段落 < 2
+    // 只要字数过 300，哪怕段落全是短行（OCR/Markdown 列表）也不会误判为 lowQuality
+    lowQuality: length < 300 && paragraphs < 2,
     excerpt: excerpt || text.slice(0, 160).trim(),
   };
 }

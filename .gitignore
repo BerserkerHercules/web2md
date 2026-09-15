@@ -1,0 +1,20 @@
+node_modules/
+data/
+.env
+*.log
+*.zip
+.DS_Store
+.trae/
+.vscode/
+.idea/
+.turbo/
+.pnpm-store/
+
+# build outputs
+packages/server/dist/
+packages/web/dist/
+packages/*/dist/
+
+# os / tooling
+Thumbs.db
+

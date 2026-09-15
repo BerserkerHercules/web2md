@@ -1,0 +1,23 @@
+{
+  "name": "all-web-to-md",
+  "version": "1.0.0",
+  "private": true,
+  "description": "网页转 Markdown 工具：DOM 解析 + 截图 OCR + 大模型排版优化",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -k -n server,web -c cyan,magenta \"npm run dev -w @web2md/server\" \"npm run dev -w @web2md/web\"",
+    "dev:server": "npm run dev -w @web2md/server",
+    "dev:web": "npm run dev -w @web2md/web",
+    "build": "npm run build -w @web2md/server && npm run build -w @web2md/web",
+    "start": "npm run start -w @web2md/server",
+    "typecheck": "npm run typecheck -w @web2md/server && npm run typecheck -w @web2md/web"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

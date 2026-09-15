@@ -1,0 +1,84 @@
+@import 'tailwindcss';
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  @apply bg-slate-100 text-slate-800 antialiased;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+}
+
+/* ---------- Markdown 预览排版 ---------- */
+.markdown-body {
+  @apply text-[15px] leading-7 text-slate-800;
+}
+.markdown-body h1 {
+  @apply mb-4 mt-2 border-b border-slate-200 pb-3 text-2xl font-bold text-slate-900;
+}
+.markdown-body h2 {
+  @apply mb-3 mt-7 border-b border-slate-100 pb-2 text-xl font-bold text-slate-900;
+}
+.markdown-body h3 {
+  @apply mb-2 mt-6 text-lg font-semibold text-slate-900;
+}
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+  @apply mb-2 mt-5 font-semibold text-slate-900;
+}
+.markdown-body p {
+  @apply my-3;
+}
+.markdown-body a {
+  @apply text-indigo-600 underline decoration-indigo-300 underline-offset-2 hover:text-indigo-800;
+}
+.markdown-body ul {
+  @apply my-3 list-disc space-y-1 pl-6;
+}
+.markdown-body ol {
+  @apply my-3 list-decimal space-y-1 pl-6;
+}
+.markdown-body blockquote {
+  @apply my-4 border-l-4 border-indigo-200 bg-indigo-50/60 py-1 pl-4 pr-2 text-slate-600;
+}
+.markdown-body code {
+  @apply rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[13px] text-pink-600;
+}
+.markdown-body pre {
+  @apply my-4 overflow-x-auto rounded-xl bg-slate-900 p-4 text-[13px] leading-6;
+}
+.markdown-body pre code {
+  @apply bg-transparent p-0 text-slate-100;
+}
+.markdown-body table {
+  @apply my-4 block w-full overflow-x-auto border-collapse text-sm;
+}
+.markdown-body th,
+.markdown-body td {
+  @apply border border-slate-300 px-3 py-2 text-left;
+}
+.markdown-body th {
+  @apply bg-slate-50 font-semibold;
+}
+.markdown-body tr:nth-child(even) td {
+  @apply bg-slate-50/60;
+}
+.markdown-body img {
+  @apply my-4 max-w-full rounded-lg border border-slate-200;
+}
+.markdown-body hr {
+  @apply my-6 border-slate-200;
+}
+
+/* ---------- 动画 ---------- */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.animate-spin-slow {
+  animation: spin 1s linear infinite;
+}

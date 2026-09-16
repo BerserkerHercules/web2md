@@ -125,7 +125,7 @@ export default function SettingsModal({
       patchLlm({
         provider,
         baseUrl: 'https://api.deepseek.com',
-        model: 'deepseek-v4-pro',
+        model: 'deepseek-flash',
       });
     } else {
       patchLlm({ provider, baseUrl: '', model: '' });

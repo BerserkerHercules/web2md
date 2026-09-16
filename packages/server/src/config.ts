@@ -26,7 +26,7 @@ export const LLM_PRESETS: Record<
   deepseek: {
     label: 'DeepSeek',
     baseUrl: 'https://api.deepseek.com',
-    model: 'deepseek-v4-pro',
+    model: 'deepseek-flash',
   },
   custom: { label: '自定义（OpenAI 兼容）', baseUrl: '', model: '' },
 };

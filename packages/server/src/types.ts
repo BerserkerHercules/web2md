@@ -1,20 +1,16 @@
 /** 全局共享类型定义 */
 
-export type OcrProvider = 'aistudio' | 'custom';
+export type OcrProvider = 'zhipu' | 'custom';
 
 export interface OcrSettings {
   enabled: boolean;
   provider: OcrProvider;
-  /** AIStudio PaddleOCR-VL：bearer token */
+  /** API Key（智谱为 bearer token，custom 忽略） */
   token: string;
-  /** 模型名，如 PaddleOCR-VL-1.6 */
+  /** 模型名，如 glm-ocr */
   model: string;
-  /** aistudio 模式：异步 jobs 地址；custom 模式：自建 OCR HTTP 服务地址 */
+  /** zhipu 模式：base url；custom 模式：自建 OCR HTTP 服务地址 */
   endpoint: string;
-  /** optionalPayload 识别选项 */
-  useDocOrientationClassify: boolean;
-  useDocUnwarping: boolean;
-  useChartRecognition: boolean;
 }
 
 export type LlmProvider = 'zhipu' | 'deepseek' | 'custom';

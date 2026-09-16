@@ -17,7 +17,7 @@ export const STAGE_LABELS: Record<StageName, string> = {
   extract: 'DOM 正文解析',
   render: '动态渲染',
   screenshot: '页面截图',
-  ocr: 'PaddleOCR-VL 识别',
+  ocr: '截图 OCR 识别',
   convert: 'Markdown 转换',
   llm: '大模型精炼',
   images: '下载图片',

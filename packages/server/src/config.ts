@@ -31,20 +31,16 @@ export const LLM_PRESETS: Record<
   custom: { label: '自定义（OpenAI 兼容）', baseUrl: '', model: '' },
 };
 
-export const PADDLE_JOBS_URL =
-  'https://paddleocr.aistudio-app.com/api/v2/ocr/jobs';
-export const PADDLE_DEFAULT_MODEL = 'PaddleOCR-VL-1.6';
+export const ZHIPU_OCR_BASE_URL = 'https://open.bigmodel.cn/api/paas/v4';
+export const ZHIPU_OCR_MODEL = 'glm-ocr';
 
 export const DEFAULT_SETTINGS: AppSettings = {
   ocr: {
     enabled: false,
-    provider: 'aistudio',
+    provider: 'zhipu',
     token: '',
-    model: PADDLE_DEFAULT_MODEL,
-    endpoint: PADDLE_JOBS_URL,
-    useDocOrientationClassify: false,
-    useDocUnwarping: false,
-    useChartRecognition: false,
+    model: ZHIPU_OCR_MODEL,
+    endpoint: ZHIPU_OCR_BASE_URL,
   },
   llm: {
     enabled: false,

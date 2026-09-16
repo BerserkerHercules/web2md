@@ -174,17 +174,17 @@ export default function SettingsModal({
         </div>
 
         <div className="max-h-[70vh] space-y-6 overflow-y-auto px-6 py-5">
-          {/* Paddle OCR */}
+          {/* OCR */}
           <section className="space-y-3 rounded-xl border border-slate-200 p-4">
             <Toggle
               checked={draft.ocr.enabled}
               onChange={(v) => patchOcr({ enabled: v })}
-              label="启用 PaddleOCR-VL 截图识别"
-              hint="DOM 提取失败或强制 OCR 时，对页面截图提交 AIStudio 异步识别任务，直接返回排版后的 Markdown"
+              label="启用截图 OCR 识别"
+              hint="DOM 提取失败或强制 OCR 时，对页面截图提交 AI 识别，直接返回排版后的 Markdown"
             />
             <div>
               <label className="mb-1 block text-xs font-medium text-slate-500">
-                服务类型
+                OCR 服务提供方
               </label>
               <select
                 value={draft.ocr.provider}
@@ -193,25 +193,41 @@ export default function SettingsModal({
                 }
                 className={inputCls}
               >
-                <option value="aistudio">AIStudio PaddleOCR-VL 官方云服务（异步 Jobs API）</option>
-                <option value="custom">自建 PaddleOCR HTTP 服务</option>
+                <option value="zhipu">智谱 GLM-OCR（秒级同步响应，推荐）</option>
+                <option value="custom">自建 OCR HTTP 服务</option>
               </select>
             </div>
-            {draft.ocr.provider === 'aistudio' ? (
+
+            {draft.ocr.provider === 'zhipu' && (
               <>
                 <div>
                   <label className="mb-1 block text-xs font-medium text-slate-500">
-                    Token（Bearer）
+                    API Key（Bearer）
                   </label>
                   <input
                     type="password"
                     value={draft.ocr.token}
                     onChange={(e) => patchOcr({ token: e.target.value })}
-                    placeholder="AIStudio PaddleOCR-VL 服务的访问 Token"
+                    placeholder="智谱开放平台 API Key（sk-...）"
                     className={inputCls}
                   />
+                  <p className="mt-1 text-xs text-slate-400">
+                    在 <a className="text-indigo-500 hover:underline" href="https://bigmodel.cn/usercenter/proj-mgmt/apikeys" target="_blank" rel="noreferrer">智谱开放平台</a> 注册后免费获取。
+                  </p>
                 </div>
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <div>
+                    <label className="mb-1 block text-xs font-medium text-slate-500">
+                      Base URL
+                    </label>
+                    <input
+                      type="url"
+                      value={draft.ocr.endpoint}
+                      onChange={(e) => patchOcr({ endpoint: e.target.value })}
+                      placeholder="https://open.bigmodel.cn/api/paas/v4"
+                      className={inputCls}
+                    />
+                  </div>
                   <div>
                     <label className="mb-1 block text-xs font-medium text-slate-500">
                       模型名称
@@ -220,46 +236,18 @@ export default function SettingsModal({
                       type="text"
                       value={draft.ocr.model}
                       onChange={(e) => patchOcr({ model: e.target.value })}
-                      placeholder="PaddleOCR-VL-1.6"
+                      placeholder="glm-ocr"
                       className={inputCls}
                     />
                   </div>
-                  <div>
-                    <label className="mb-1 block text-xs font-medium text-slate-500">
-                      Jobs API 地址
-                    </label>
-                    <input
-                      type="url"
-                      value={draft.ocr.endpoint}
-                      onChange={(e) => patchOcr({ endpoint: e.target.value })}
-                      placeholder="https://paddleocr.aistudio-app.com/api/v2/ocr/jobs"
-                      className={inputCls}
-                    />
-                  </div>
-                </div>
-                <div className="space-y-1.5 rounded-lg bg-slate-50 p-3">
-                  <span className="text-xs font-medium text-slate-500">识别选项（optionalPayload）</span>
-                  {([
-                    ['useDocOrientationClassify', '文档方向分类'],
-                    ['useDocUnwarping', '文档扭曲矫正'],
-                    ['useChartRecognition', '图表识别'],
-                  ] as const).map(([key, label]) => (
-                    <label key={key} className="flex cursor-pointer items-center gap-2 text-xs text-slate-600">
-                      <input
-                        type="checkbox"
-                        checked={draft.ocr[key]}
-                        onChange={(e) => patchOcr({ [key]: e.target.checked })}
-                        className="h-3.5 w-3.5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-400"
-                      />
-                      {label}
-                    </label>
-                  ))}
                 </div>
                 <p className="text-xs text-slate-400">
                   Token 仅保存在本机 data/settings.json，不会上传到任何第三方。
                 </p>
               </>
-            ) : (
+            )}
+
+            {draft.ocr.provider === 'custom' && (
               <div>
                 <label className="mb-1 block text-xs font-medium text-slate-500">
                   服务地址（Endpoint）

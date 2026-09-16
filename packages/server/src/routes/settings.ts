@@ -1,7 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import { LLM_PRESETS, loadSettings, saveSettings } from '../config';
 import { testConnection } from '../services/llm';
-import { validatePaddleToken } from '../services/ocr';
+import { validateZhipuKey } from '../services/ocr';
 import type { AppSettings, LlmProvider, OcrProvider } from '../types';
 
 function asString(v: unknown): string {
@@ -18,8 +18,7 @@ function sanitizeSettings(input: unknown): AppSettings {
   const incomingOcr = body.ocr ?? {};
   const incomingLlm = body.llm ?? {};
 
-  const ocrProvider: OcrProvider =
-    incomingOcr.provider === 'custom' ? 'custom' : 'aistudio';
+  const ocrProvider: OcrProvider = incomingOcr.provider === 'custom' ? 'custom' : 'zhipu';
   const llmProvider: LlmProvider =
     incomingLlm.provider === 'deepseek' || incomingLlm.provider === 'custom'
       ? incomingLlm.provider
@@ -32,9 +31,6 @@ function sanitizeSettings(input: unknown): AppSettings {
       token: asString(incomingOcr.token),
       model: asString(incomingOcr.model) || current.ocr.model,
       endpoint: asString(incomingOcr.endpoint) || current.ocr.endpoint,
-      useDocOrientationClassify: asBoolean(incomingOcr.useDocOrientationClassify),
-      useDocUnwarping: asBoolean(incomingOcr.useDocUnwarping),
-      useChartRecognition: asBoolean(incomingOcr.useChartRecognition),
     },
     llm: {
       enabled: asBoolean(incomingLlm.enabled),
@@ -70,14 +66,13 @@ export default async function settingsRoutes(app: FastifyInstance): Promise<void
   app.post('/api/settings/test-ocr', async (req, reply) => {
     const settings = sanitizeSettings(req.body);
     if (settings.ocr.provider === 'custom') {
-      // 自定义服务仅校验地址已填写
       if (!settings.ocr.endpoint) {
         return reply.code(400).send({ ok: false, error: '请填写自建 OCR 服务地址' });
       }
       return { ok: true };
     }
     try {
-      await validatePaddleToken(settings.ocr);
+      await validateZhipuKey(settings.ocr);
       return { ok: true };
     } catch (err) {
       return reply.code(400).send({ ok: false, error: (err as Error).message });

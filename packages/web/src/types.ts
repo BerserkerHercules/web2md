@@ -1,4 +1,4 @@
-export type OcrProvider = 'aistudio' | 'custom';
+export type OcrProvider = 'zhipu' | 'custom';
 
 export interface OcrSettings {
   enabled: boolean;
@@ -6,9 +6,6 @@ export interface OcrSettings {
   token: string;
   model: string;
   endpoint: string;
-  useDocOrientationClassify: boolean;
-  useDocUnwarping: boolean;
-  useChartRecognition: boolean;
 }
 
 export type LlmProvider = 'zhipu' | 'deepseek' | 'custom';

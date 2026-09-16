@@ -117,13 +117,10 @@ export async function runConversion(jobId: string): Promise<void> {
         if (shouldOcr) {
           if (!settings.ocr.enabled) {
             log('截图 OCR 未在设置中启用，跳过截图识别');
-          } else if (
-            settings.ocr.provider === 'aistudio' &&
-            !settings.ocr.token
-          ) {
-            log('未配置 PaddleOCR-VL Token，跳过截图识别');
-            stage('screenshot', 'skipped', '未配置 OCR Token');
-            stage('ocr', 'skipped', '未配置 OCR Token');
+          } else if (settings.ocr.provider === 'zhipu' && !settings.ocr.token) {
+            log('未配置智谱 API Key，跳过截图识别');
+            stage('screenshot', 'skipped', '未配置 OCR API Key');
+            stage('ocr', 'skipped', '未配置 OCR API Key');
           } else if (settings.ocr.provider === 'custom' && !settings.ocr.endpoint) {
             log('未配置自建 OCR 服务地址，跳过截图识别');
             stage('screenshot', 'skipped', '未配置 OCR 服务地址');
@@ -151,7 +148,7 @@ export async function runConversion(jobId: string): Promise<void> {
               );
             }
 
-            stage('ocr', 'running', `PaddleOCR-VL 识别中（${tiles.length} 个异步任务，单任务最长 5 分钟）…`);
+            stage('ocr', 'running', `OCR 识别中（${tiles.length} 张截图）…`);
             const ocrResult = await recognizeTiles(
               tiles,
               settings.ocr,
@@ -160,14 +157,7 @@ export async function runConversion(jobId: string): Promise<void> {
               },
               (tileIndex, phase) => {
                 const n = tileIndex + 1;
-                if (phase === 'pending') {
-                  log(`第 ${n} 屏已提交，云端排队中…`);
-                } else if (phase.startsWith('queue-wait')) {
-                  log(`第 ${n} 屏提交遇到云端队列已满，10s 后重试…`);
-                } else if (phase.startsWith('running')) {
-                  const pages = phase.split(':')[1];
-                  log(pages ? `第 ${n} 屏识别中（${pages} 页）…` : `第 ${n} 屏识别中…`);
-                }
+                log(`第 ${n} 屏 ${phase}…`);
               },
             );
             if (ocrResult.failedTiles >= tiles.length) {

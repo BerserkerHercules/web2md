@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index, follow">
+<title>隐私政策 · 前额叶训练</title>
+<meta name="description" content="《前额叶训练》iOS 应用隐私政策：本地优先、不追踪、无广告 SDK、无需注册。">
+<style>
+  :root {
+    --bg: #f6f7f9;
+    --card: #ffffff;
+    --ink: #1d2433;
+    --ink-2: #4a5468;
+    --ink-3: #7b8496;
+    --line: #e6e9ef;
+    --brand: #2f6f5e;
+    --brand-soft: #e8f2ef;
+    --amber: #8a5a17;
+    --amber-soft: #fbf3e4;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+                 "Microsoft YaHei", "Segoe UI", Roboto, sans-serif;
+    font-size: 16px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 820px; margin: 0 auto; padding: 0 20px 64px; }
+
+  /* ── 顶部 ─────────────────────────────── */
+  header.hero {
+    padding: 56px 20px 36px;
+    text-align: center;
+    background: linear-gradient(180deg, #eef4f2 0%, var(--bg) 100%);
+  }
+  .hero .badge {
+    width: 56px; height: 56px; margin: 0 auto 16px;
+    border-radius: 16px;
+    background: var(--brand);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 6px 18px rgba(47,111,94,.25);
+  }
+  .hero h1 { margin: 0 0 8px; font-size: 28px; letter-spacing: .5px; }
+  .hero .sub { color: var(--ink-2); font-size: 15px; margin: 0; }
+  .hero .meta {
+    display: inline-block; margin-top: 14px;
+    font-size: 13px; color: var(--ink-3);
+    background: var(--card); border: 1px solid var(--line);
+    padding: 4px 14px; border-radius: 999px;
+  }
+
+  /* ── 承诺卡片 ─────────────────────────── */
+  .promises {
+    display: grid; gap: 12px;
+    grid-template-columns: repeat(4, 1fr);
+    margin: -18px 0 36px;
+  }
+  .promise {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 16px 14px; text-align: center;
+  }
+  .promise .ico { font-size: 20px; }
+  .promise b { display: block; font-size: 14px; margin: 6px 0 2px; }
+  .promise span { font-size: 12.5px; color: var(--ink-3); line-height: 1.5; display: block; }
+
+  /* ── 正文卡片 ─────────────────────────── */
+  section.card {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 28px 30px; margin-bottom: 16px;
+  }
+  h2 {
+    font-size: 18px; margin: 0 0 14px;
+    display: flex; align-items: baseline; gap: 10px;
+  }
+  h2 .no {
+    font-size: 13px; color: var(--brand); font-weight: 700;
+    background: var(--brand-soft); border-radius: 6px;
+    padding: 1px 8px; white-space: nowrap;
+  }
+  h3 { font-size: 15.5px; margin: 20px 0 6px; }
+  p { margin: 8px 0; color: var(--ink-2); }
+  p strong, li strong { color: var(--ink); }
+  ul, ol { margin: 8px 0; padding-left: 22px; color: var(--ink-2); }
+  li { margin: 5px 0; }
+  a { color: var(--brand); }
+
+  .lead {
+    background: var(--brand-soft);
+    border-radius: 10px; padding: 14px 18px;
+    color: #274d43; font-size: 14.5px; margin: 0 0 6px;
+  }
+
+  /* ── 表格 ─────────────────────────────── */
+  .table-scroll { overflow-x: auto; margin: 12px -4px 4px; }
+  table {
+    width: 100%; border-collapse: collapse; font-size: 14px;
+    min-width: 520px;
+  }
+  th, td {
+    text-align: left; padding: 11px 14px;
+    border-bottom: 1px solid var(--line); vertical-align: top;
+  }
+  th {
+    background: #fafbfc; color: var(--ink); font-weight: 600;
+    white-space: nowrap;
+  }
+  td { color: var(--ink-2); }
+  tr:last-child td { border-bottom: none; }
+
+  .tag {
+    display: inline-block; font-size: 12px; font-weight: 600;
+    padding: 1px 8px; border-radius: 6px; white-space: nowrap;
+  }
+  .tag.local  { background: var(--brand-soft); color: var(--brand); }
+  .tag.cloud  { background: #eaf0fb; color: #34589c; }
+  .tag.apple  { background: #f0eefb; color: #5a4fa0; }
+
+  .callout {
+    border-left: 3px solid #d9a943; background: var(--amber-soft);
+    color: var(--amber); border-radius: 0 10px 10px 0;
+    padding: 12px 16px; font-size: 14px; margin: 16px 0 4px;
+  }
+
+  .toc {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4px 24px;
+    margin: 0; padding: 0; list-style: none;
+  }
+  .toc a { text-decoration: none; color: var(--ink-2); font-size: 14.5px; }
+  .toc a:hover { color: var(--brand); }
+  .toc .n { color: var(--brand); font-weight: 700; margin-right: 8px; font-size: 13px; }
+
+  footer {
+    text-align: center; color: var(--ink-3); font-size: 13px;
+    padding-top: 28px; line-height: 2;
+  }
+
+  @media (max-width: 640px) {
+    .promises { grid-template-columns: repeat(2, 1fr); }
+    section.card { padding: 22px 18px; }
+    .toc { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 24px; }
+  }
+  @media print {
+    body { background: #fff; }
+    header.hero { background: #fff; padding-top: 24px; }
+    section.card { border: none; border-top: 1px solid #ddd; border-radius: 0; padding: 18px 0; }
+    .promise { border-color: #ddd; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="badge" aria-hidden="true">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"
+         stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3l7 3v5c0 4.6-3 8.4-7 10-4-1.6-7-5.4-7-10V6l7-3z"/>
+      <path d="M9 12l2 2 4-4"/>
+    </svg>
+  </div>
+  <h1>前额叶训练 · 隐私政策</h1>
+  <p class="sub">本地优先、不追踪、无广告、无需注册账号</p>
+  <div class="meta">生效 / 最后更新日期：2026 年 10 月 13 日</div>
+</header>
+
+<div class="wrap">
+
+  <div class="promises">
+    <div class="promise">
+      <div class="ico">🔒</div>
+      <b>本地优先</b>
+      <span>训练数据默认只存在你的设备上</span>
+    </div>
+    <div class="promise">
+      <div class="ico">🚫</div>
+      <b>不追踪</b>
+      <span>无广告 SDK、无数据分析 SDK、无 IDFA</span>
+    </div>
+    <div class="promise">
+      <div class="ico">👤</div>
+      <b>无需注册</b>
+      <span>不要求姓名、手机号或邮箱</span>
+    </div>
+    <div class="promise">
+      <div class="ico">🗑️</div>
+      <b>随时删除</b>
+      <span>应用内一键清空本机与云端数据</span>
+    </div>
+  </div>
+
+  <section class="card" id="toc">
+    <h2><span class="no">目录</span>快速导航</h2>
+    <ul class="toc">
+      <li><a href="#s1"><span class="n">01</span>政策适用范围</a></li>
+      <li><a href="#s2"><span class="n">02</span>我们收集与使用的信息</a></li>
+      <li><a href="#s3"><span class="n">03</span>AI 分析功能特别说明</a></li>
+      <li><a href="#s4"><span class="n">04</span>iCloud 云同步</a></li>
+      <li><a href="#s5"><span class="n">05</span>第三方服务与信息共享</a></li>
+      <li><a href="#s6"><span class="n">06</span>存储地点与留存期限</a></li>
+      <li><a href="#s7"><span class="n">07</span>数据安全</a></li>
+      <li><a href="#s8"><span class="n">08</span>你的权利</a></li>
+      <li><a href="#s9"><span class="n">09</span>未成年人保护</a></li>
+      <li><a href="#s10"><span class="n">10</span>政策更新</a></li>
+      <li><a href="#s11"><span class="n">11</span>联系我们</a></li>
+    </ul>
+  </section>
+
+  <section class="card" id="s1">
+    <h2><span class="no">01</span>政策适用范围</h2>
+    <p class="lead">本政策适用于 iOS 应用「前额叶训练」（以下简称“本应用”）。本应用为一款认知训练工具，提供多种注意力、工作记忆与执行功能训练小游戏、训练数据统计、AI 训练分析（付费功能）、成就系统与可选的 iCloud 同步。</p>
+    <p>请你在使用本应用前仔细阅读本政策。当你开始使用本应用，即表示你已理解本政策所述内容。本应用的设计遵循<strong>“能不收集就不收集、能不出端就不出端”</strong>的原则。</p>
+  </section>
+
+  <section class="card" id="s2">
+    <h2><span class="no">02</span>我们收集与使用的信息</h2>
+    <p>本应用<strong>不要求注册账号</strong>，不会索取你的姓名、手机号、电子邮箱、地理位置、通讯录、照片（保存成就图片除外，见下）等身份信息，也不读取广告标识符（IDFA）。实际涉及的数据如下：</p>
+
+    <h3>2.1 数据类型一览</h3>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>数据类型</th><th>具体内容</th><th>使用目的</th><th>存放位置</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>训练记录与设置</strong></td>
+            <td>每局游戏的分数、正确率、反应时长等表现数据；难度、每日训练与打卡记录、成就、偏好设置。<strong>不含任何身份信息。</strong></td>
+            <td>在本机生成统计图表、自适应难度、成就与训练分析</td>
+            <td><span class="tag local">默认仅本机</span></td>
+          </tr>
+          <tr>
+            <td><strong>AI 分析请求数据</strong></td>
+            <td>仅聚合后的数值统计（训练天数、总分、各维度表现等）与游戏标识，<strong>不含昵称、精确时间戳、设备信息或自由文本</strong></td>
+            <td>生成个性化 AI 训练分析报告（你主动触发）</td>
+            <td><span class="tag cloud">经中转发送至 AI 服务商</span></td>
+          </tr>
+          <tr>
+            <td><strong>购买记录</strong></td>
+            <td>非消耗型买断商品（unlockAll）的交易权益状态。支付由 Apple 处理，开发者无法接触你的付款信息</td>
+            <td>验证你已购买的完整功能权益（含 iCloud 同步）</td>
+            <td><span class="tag apple">Apple StoreKit</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>2.2 设备权限</h3>
+    <ul>
+      <li><strong>通知（默认关闭）：</strong>仅用于在你设定的时间发送每日训练提醒。提醒由 iOS <strong>本地通知</strong>调度，不联网、不上传，通知内容不含任何成绩或身份信息。你可以随时在应用设置或系统设置中关闭。</li>
+      <li><strong>相册（仅“添加”权限）：</strong>仅当你主动保存或分享成就图片时，经你确认后把图片<strong>写入</strong>相册。本应用不能读取或浏览你的相册内容。</li>
+    </ul>
+
+    <h3>2.3 我们明确不做的事</h3>
+    <ul>
+      <li>不接入任何广告 SDK、广告归因或数据分析 SDK；</li>
+      <li>不使用 IDFA / 广告标识符，不进行跨应用追踪；</li>
+      <li>不收集设备型号、系统版本、IP 地址等用于画像的信息；</li>
+      <li>不索取位置、通讯录、麦克风、相机、健康等权限。</li>
+    </ul>
+  </section>
+
+  <section class="card" id="s3">
+    <h2><span class="no">03</span>AI 分析功能特别说明</h2>
+    <p>AI 训练分析是一项<strong>由你主动点击触发</strong>的功能。为保护你的数据，请求链路经过专门设计：</p>
+    <ol>
+      <li><strong>最小化发送：</strong>请求体只包含由本机计算好的<strong>聚合数值统计</strong>（如训练天数、综合分、各认知维度表现），不包含昵称、精确时间戳、设备信息或任何可识别你个人身份的内容。</li>
+      <li><strong>经自有中转服务转发：</strong>请求先发送至开发者自有的、部署于<strong>阿里云函数计算（中国杭州区域）</strong>的中转服务，再由其转发至深度求索（DeepSeek）大模型接口。AI 服务商的密钥只保存在云端，不内置在应用中。</li>
+      <li><strong>中转不留存内容：</strong>中转服务仅做透传，<strong>不持久化请求或响应正文</strong>；服务日志仅记录请求状态码、耗时与字节数，用于排查故障。</li>
+      <li><strong>用途限定：</strong>发送的数据仅用于当次生成分析报告，不用于训练之外的任何目的，也不会与你的身份关联。</li>
+    </ol>
+    <div class="callout">如果你不希望任何训练数据离开设备，不使用“AI 分析”功能即可，其余所有功能（统计、图表、自适应难度等）均完全在本机运行。</div>
+  </section>
+
+  <section class="card" id="s4">
+    <h2><span class="no">04</span>iCloud 云同步</h2>
+    <p>iCloud 同步是买断用户的可选功能，用于在你自己的多台 Apple 设备间同步训练数据。它满足以下全部条件时才会运行：<strong>你已购买完整功能、已在设置中手动开启、设备已登录 iCloud</strong>。免费用户或开关关闭时，应用不会发起任何云同步请求。</p>
+    <ul>
+      <li>同步使用 Apple <strong>CloudKit 私有数据库</strong>，数据与你的 Apple ID 关联，仅你本人可访问，开发者与其他任何用户均无法查看；</li>
+      <li>同步内容为训练记录、打卡、成就、难度与偏好设置的 JSON 数据；</li>
+      <li>你可以在应用设置中随时关闭同步，或使用<strong>“清空本机与 iCloud 云端”</strong>彻底删除两端数据。</li>
+    </ul>
+  </section>
+
+  <section class="card" id="s5">
+    <h2><span class="no">05</span>第三方服务与信息共享</h2>
+    <p>除实现上述功能所必需的服务外，我们不会向任何第三方共享、出售或出租你的个人信息。涉及的服务提供方如下：</p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>服务提供方</th><th>使用场景</th><th>收到的信息</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Apple</strong><br>（StoreKit / CloudKit / 系统通知）</td>
+            <td>内购交易与权益验证、iCloud 私有数据库同步、本地通知调度</td>
+            <td>交易信息与 iCloud 数据由 Apple 按其隐私政策处理，开发者不可见你的付款信息</td>
+          </tr>
+          <tr>
+            <td><strong>深度求索 DeepSeek</strong></td>
+            <td>在你主动使用 AI 分析时提供大模型推理</td>
+            <td>仅去标识化的聚合训练数值，无身份信息</td>
+          </tr>
+          <tr>
+            <td><strong>阿里云（函数计算）</strong></td>
+            <td>承载开发者自有的 AI 请求中转服务（中国杭州区域）</td>
+            <td>仅作为传输通道，不持久化请求正文；日志仅含状态码、耗时与字节数</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>上述服务提供方对其自身服务收集的信息承担独立责任，你可以查阅 Apple 与深度求索的隐私政策了解更多。我们<strong>不会</strong>出于广告或营销目的向任何方共享数据。</p>
+  </section>
+
+  <section class="card" id="s6">
+    <h2><span class="no">06</span>存储地点与留存期限</h2>
+    <ul>
+      <li><strong>本机数据：</strong>以 JSON 文件形式保存在你的设备应用沙盒内，不上传、不备份至开发者服务器；</li>
+      <li><strong>AI 分析数据：</strong>中转与 AI 服务均位于<strong>中国境内</strong>，中转服务不持久化内容；</li>
+      <li><strong>iCloud 数据：</strong>存储于 Apple CloudKit，数据区域由 Apple 根据你的 Apple ID 设置管理；</li>
+      <li><strong>留存期限：</strong>训练数据在你设备上保留至你主动删除（应用内“清空数据”）或卸载应用；开启 iCloud 同步的数据保留至你执行“清空本机与云端”。</li>
+    </ul>
+  </section>
+
+  <section class="card" id="s7">
+    <h2><span class="no">07</span>数据安全</h2>
+    <ul>
+      <li>AI 中转请求经访问令牌校验，传输使用 HTTPS；</li>
+      <li>云端密钥仅保存在服务端环境变量中，不写入应用安装包；</li>
+      <li>iCloud 数据通过 Apple 系统机制加密传输与存储；</li>
+      <li>网络请求采用临时会话配置，不额外缓存凭据。</li>
+    </ul>
+    <p>互联网传输不存在绝对安全。如发现安全问题，欢迎通过下方联系方式告知，我们会及时处理。</p>
+  </section>
+
+  <section class="card" id="s8">
+    <h2><span class="no">08</span>你的权利</h2>
+    <p>依照《中华人民共和国个人信息保护法》等相关法律法规，你享有以下权利：</p>
+    <ul>
+      <li><strong>查阅与导出：</strong>可在应用设置中导出你的训练记录（JSON 文件，经系统分享面板由你自行选择去向）；</li>
+      <li><strong>删除：</strong>可随时在应用内清空本机数据；开启 iCloud 同步时可一并清空云端数据；卸载应用也会删除本机全部数据；</li>
+      <li><strong>撤回同意：</strong>可随时关闭通知或 iCloud 同步开关；不使用 AI 分析即不会有训练数据发送至该功能；</li>
+      <li><strong>注销账号：</strong>本应用无账号体系，因此无需注销；</li>
+      <li><strong>投诉与举报：</strong>如认为我们处理个人信息损害了你的合法权益，可通过下方邮箱联系，我们将在 15 个工作日内回复。</li>
+    </ul>
+  </section>
+
+  <section class="card" id="s9">
+    <h2><span class="no">09</span>未成年人保护</h2>
+    <p>本应用为通用认知训练工具，不针对不满 14 周岁的儿童设计，也不主动收集未成年人的个人信息。由于应用无需注册且不收集身份信息，我们无法识别用户年龄。若你是监护人，发现未成年人在未获你同意的情况下使用相关功能，可通过应用内删除功能清除其数据，或联系我们协助处理。</p>
+  </section>
+
+  <section class="card" id="s10">
+    <h2><span class="no">10</span>政策更新</h2>
+    <p>当本应用功能发生变化或法律法规要求调整时，我们可能更新本政策。更新后的政策将在本页面发布，并更新顶部的“最后更新日期”。对于重大变更（如新增数据收集类型或用途），我们会在应用内以适当方式提示。</p>
+  </section>
+
+  <section class="card" id="s11">
+    <h2><span class="no">11</span>联系我们</h2>
+    <p>如果你对本隐私政策或个人信息处理有任何疑问、意见或请求，可通过以下方式联系开发者：</p>
+    <ul>
+      <li>联系邮箱：<a href="mailto:youremail@example.com">youremail@example.com</a></li>
+    </ul>
+    <p>我们通常会在 <strong>15 个工作日</strong>内回复你的请求。</p>
+  </section>
+
+  <footer>
+    《前额叶训练》隐私政策 · 最后更新于 2026 年 10 月 13 日<br>
+    本页面为静态页面，不使用 Cookie，不记录访客信息。
+  </footer>
+
+</div>
+</body>
+</html>
